@@ -15,20 +15,25 @@ class MicropostsController extends Controller
      * @return \Illuminate\Http\Response
      */
   
-        public function index()
-    {
+        public function index(){
         $data = [];
         if (\Auth::check()) {
             $user = \Auth::user();
             $microposts = $user->feed_microposts()->orderBy('created_at', 'desc')->paginate(10);
-
             $data = [
                 'user' => $user,
                 'microposts' => $microposts,
-            ];
+                ];
+            $data += $this->counts($user);
+            return view('users.show', $data);
         }
-        return view('welcome', $data);
+        else{
+        return view('welcome');
     }
+    }   
+    
+   
+    
     
     
     public function store(Request $request)
@@ -41,7 +46,7 @@ class MicropostsController extends Controller
             'content' => $request->content,
         ]);
 
-        return redirect('/');
+        return redirect()->back();
     }
     public function destroy($id)
     {
@@ -52,6 +57,22 @@ class MicropostsController extends Controller
         }
 
         return redirect()->back();
+    }
+    
+    
+    public function favorites($id)
+    {
+        $user = User::find($id);
+        $favorites = $user->favoring()->paginate(10);
+
+        $data = [
+            'user' => $user,
+            'favorites' => $favorites,
+        ];
+
+        $data += $this->counts($user);
+
+        return view('users.favorites', $data);
     }
     
     

@@ -15,12 +15,23 @@
             <div>
                 @if (Auth::user()->id == $micropost->user_id)
                     {!! Form::open(['route' => ['microposts.destroy', $micropost->id], 'method' => 'delete']) !!}
-                    {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-xs']) !!}
-                    {!! Form::open(['route' => ['microposts.destroy', $micropost->id], 'method' => 'delete']) !!}
-                    {!! Form::submit('favo', ['class' => 'btn btn-info btn-xs']) !!}
+                        {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-xs']) !!}
                     {!! Form::close() !!}
                 @endif
             </div>
+            <div>
+                @if (Auth::user()->is_favoring($micropost->id))
+                    {!! Form::open(['route' => ['user.unfavo', $micropost->id], 'method' => 'delete']) !!}
+                    {!! Form::submit('Unfavo', ['class' => "btn btn-danger btn-xs"]) !!}
+                    {!! Form::close() !!}
+                @else
+                    {!! Form::open(['route' => ['user.favo', $micropost->id]]) !!}
+                    {!! Form::submit(' Favo ', ['class' => "btn btn-primary btn-xs"]) !!}
+                    {!! Form::close() !!}
+                @endif
+                
+            </div>
+            
         </div>
     </li>
 @endforeach
